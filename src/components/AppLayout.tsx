@@ -20,11 +20,49 @@ const tabs: Tab[] = [
 export function AppLayout({ children }: { children: ReactNode }) {
   const loc = useLocation();
   return (
-    <div className="phone-frame flex flex-col">
-      <main className="flex-1 overflow-y-auto pb-24">{children}</main>
+    <div className="min-h-dvh flex flex-col bg-background">
+      {/* Desktop top navbar */}
+      <header className="hidden md:block sticky top-0 z-40 bg-card/90 backdrop-blur border-b border-border">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2">
+            <span className="hero-gradient h-9 w-9 rounded-full grid place-items-center shadow-warm">
+              <Sprout className="h-5 w-5 text-primary-foreground" />
+            </span>
+            <span className="font-extrabold text-lg tracking-tight">Táo Vàng</span>
+          </Link>
+          <nav>
+            <ul className="flex items-center gap-1">
+              {tabs.map((t) => {
+                const active = loc.pathname === t.to;
+                const Icon = t.icon;
+                return (
+                  <li key={t.to}>
+                    <Link
+                      to={t.to}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm transition-colors ${
+                        active
+                          ? "bg-primary/10 text-primary font-semibold"
+                          : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {t.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        </div>
+      </header>
 
-      <nav className="absolute bottom-0 left-0 right-0 bg-card/95 backdrop-blur border-t border-border">
-        <ul className="grid grid-cols-5 items-end px-2 pt-2 pb-3">
+      <main className="flex-1 w-full pb-24 md:pb-10">
+        <div className="max-w-6xl mx-auto w-full">{children}</div>
+      </main>
+
+      {/* Mobile bottom nav */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur border-t border-border">
+        <ul className="grid grid-cols-5 items-end px-2 pt-2 pb-3 max-w-md mx-auto">
           {tabs.map((t) => {
             const active = loc.pathname === t.to;
             const Icon = t.icon;
@@ -62,14 +100,14 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
 export function PageHeader({ title, seedCount = 0 }: { title: string; seedCount?: number }) {
   return (
-    <header className="hero-gradient text-primary-foreground px-5 pt-10 pb-16 rounded-b-[2rem] relative">
-      <div className="flex items-start justify-between">
-        <h1 className="text-3xl font-bold tracking-tight drop-shadow-sm">{title}</h1>
+    <header className="hero-gradient text-primary-foreground px-5 md:px-10 pt-10 md:pt-12 pb-16 md:pb-20 rounded-b-[2rem] md:rounded-b-[2.5rem] relative">
+      <div className="flex items-start justify-between max-w-5xl mx-auto w-full">
+        <h1 className="text-3xl md:text-5xl font-bold tracking-tight drop-shadow-sm">{title}</h1>
         <div className="flex flex-col items-center">
           <span className="text-xs font-semibold text-warm bg-card/95 px-2 py-0.5 rounded-full mb-1">
             {seedCount} hạt
           </span>
-          <div className="h-12 w-12 rounded-full bg-primary-foreground/15 grid place-items-center backdrop-blur">
+          <div className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-primary-foreground/15 grid place-items-center backdrop-blur">
             <Sprout className="h-7 w-7 text-primary-foreground" />
           </div>
         </div>
