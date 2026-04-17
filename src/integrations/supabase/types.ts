@@ -74,6 +74,36 @@ export type Database = {
         }
         Relationships: []
       }
+      membership_packages: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          months: number
+          name: string
+          seeds_cost: number
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          months: number
+          name: string
+          seeds_cost: number
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          months?: number
+          name?: string
+          seeds_cost?: number
+          sort_order?: number
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string
@@ -125,6 +155,7 @@ export type Database = {
           phone: string | null
           referral_code: string | null
           seed_count: number
+          seeds_spent: number
           updated_at: string
           user_id: string
         }
@@ -136,6 +167,7 @@ export type Database = {
           phone?: string | null
           referral_code?: string | null
           seed_count?: number
+          seeds_spent?: number
           updated_at?: string
           user_id: string
         }
@@ -147,7 +179,86 @@ export type Database = {
           phone?: string | null
           referral_code?: string | null
           seed_count?: number
+          seeds_spent?: number
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      seed_packages: {
+        Row: {
+          bonus_seeds: number
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          price_vnd: number
+          seeds: number
+          sort_order: number
+        }
+        Insert: {
+          bonus_seeds?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          price_vnd: number
+          seeds: number
+          sort_order?: number
+        }
+        Update: {
+          bonus_seeds?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          price_vnd?: number
+          seeds?: number
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      seed_transactions: {
+        Row: {
+          amount_vnd: number | null
+          created_at: string
+          description: string | null
+          id: string
+          order_code: string | null
+          package_id: string | null
+          paid_at: string | null
+          seeds_delta: number
+          sepay_ref: string | null
+          status: Database["public"]["Enums"]["tx_status"]
+          type: Database["public"]["Enums"]["tx_type"]
+          user_id: string
+        }
+        Insert: {
+          amount_vnd?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_code?: string | null
+          package_id?: string | null
+          paid_at?: string | null
+          seeds_delta: number
+          sepay_ref?: string | null
+          status?: Database["public"]["Enums"]["tx_status"]
+          type: Database["public"]["Enums"]["tx_type"]
+          user_id: string
+        }
+        Update: {
+          amount_vnd?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_code?: string | null
+          package_id?: string | null
+          paid_at?: string | null
+          seeds_delta?: number
+          sepay_ref?: string | null
+          status?: Database["public"]["Enums"]["tx_status"]
+          type?: Database["public"]["Enums"]["tx_type"]
           user_id?: string
         }
         Relationships: []
@@ -215,6 +326,8 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      tx_status: "pending" | "paid" | "failed" | "expired"
+      tx_type: "topup" | "spend_membership"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -343,6 +456,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      tx_status: ["pending", "paid", "failed", "expired"],
+      tx_type: ["topup", "spend_membership"],
     },
   },
 } as const
