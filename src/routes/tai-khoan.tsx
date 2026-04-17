@@ -108,7 +108,7 @@ function AccountPage() {
         <Button className="w-full warm-gradient text-warm-foreground border-0 hover:opacity-90">
           <Crown className="h-4 w-4 mr-2" /> Kích hoạt thành viên Táo Vàng
         </Button>
-        <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white">
+        <Button className="w-full bg-[oklch(0.62_0.16_240)] hover:bg-[oklch(0.55_0.18_240)] text-primary-foreground">
           <Baby className="h-4 w-4 mr-2" /> Táo Vàng Con Trẻ
         </Button>
       </Card>

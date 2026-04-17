@@ -9,38 +9,175 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VuonTaoRouteImport } from './routes/vuon-tao'
+import { Route as TaiKhoanRouteImport } from './routes/tai-khoan'
+import { Route as SuKienRouteImport } from './routes/su-kien'
+import { Route as LienHeRouteImport } from './routes/lien-he'
+import { Route as HatGiongRouteImport } from './routes/hat-giong'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SanPhamSlugRouteImport } from './routes/san-pham.$slug'
 
+const VuonTaoRoute = VuonTaoRouteImport.update({
+  id: '/vuon-tao',
+  path: '/vuon-tao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TaiKhoanRoute = TaiKhoanRouteImport.update({
+  id: '/tai-khoan',
+  path: '/tai-khoan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuKienRoute = SuKienRouteImport.update({
+  id: '/su-kien',
+  path: '/su-kien',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LienHeRoute = LienHeRouteImport.update({
+  id: '/lien-he',
+  path: '/lien-he',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HatGiongRoute = HatGiongRouteImport.update({
+  id: '/hat-giong',
+  path: '/hat-giong',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SanPhamSlugRoute = SanPhamSlugRouteImport.update({
+  id: '/san-pham/$slug',
+  path: '/san-pham/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/hat-giong': typeof HatGiongRoute
+  '/lien-he': typeof LienHeRoute
+  '/su-kien': typeof SuKienRoute
+  '/tai-khoan': typeof TaiKhoanRoute
+  '/vuon-tao': typeof VuonTaoRoute
+  '/san-pham/$slug': typeof SanPhamSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/hat-giong': typeof HatGiongRoute
+  '/lien-he': typeof LienHeRoute
+  '/su-kien': typeof SuKienRoute
+  '/tai-khoan': typeof TaiKhoanRoute
+  '/vuon-tao': typeof VuonTaoRoute
+  '/san-pham/$slug': typeof SanPhamSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/hat-giong': typeof HatGiongRoute
+  '/lien-he': typeof LienHeRoute
+  '/su-kien': typeof SuKienRoute
+  '/tai-khoan': typeof TaiKhoanRoute
+  '/vuon-tao': typeof VuonTaoRoute
+  '/san-pham/$slug': typeof SanPhamSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/hat-giong'
+    | '/lien-he'
+    | '/su-kien'
+    | '/tai-khoan'
+    | '/vuon-tao'
+    | '/san-pham/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/hat-giong'
+    | '/lien-he'
+    | '/su-kien'
+    | '/tai-khoan'
+    | '/vuon-tao'
+    | '/san-pham/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/hat-giong'
+    | '/lien-he'
+    | '/su-kien'
+    | '/tai-khoan'
+    | '/vuon-tao'
+    | '/san-pham/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  HatGiongRoute: typeof HatGiongRoute
+  LienHeRoute: typeof LienHeRoute
+  SuKienRoute: typeof SuKienRoute
+  TaiKhoanRoute: typeof TaiKhoanRoute
+  VuonTaoRoute: typeof VuonTaoRoute
+  SanPhamSlugRoute: typeof SanPhamSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vuon-tao': {
+      id: '/vuon-tao'
+      path: '/vuon-tao'
+      fullPath: '/vuon-tao'
+      preLoaderRoute: typeof VuonTaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tai-khoan': {
+      id: '/tai-khoan'
+      path: '/tai-khoan'
+      fullPath: '/tai-khoan'
+      preLoaderRoute: typeof TaiKhoanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/su-kien': {
+      id: '/su-kien'
+      path: '/su-kien'
+      fullPath: '/su-kien'
+      preLoaderRoute: typeof SuKienRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lien-he': {
+      id: '/lien-he'
+      path: '/lien-he'
+      fullPath: '/lien-he'
+      preLoaderRoute: typeof LienHeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hat-giong': {
+      id: '/hat-giong'
+      path: '/hat-giong'
+      fullPath: '/hat-giong'
+      preLoaderRoute: typeof HatGiongRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +185,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/san-pham/$slug': {
+      id: '/san-pham/$slug'
+      path: '/san-pham/$slug'
+      fullPath: '/san-pham/$slug'
+      preLoaderRoute: typeof SanPhamSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  HatGiongRoute: HatGiongRoute,
+  LienHeRoute: LienHeRoute,
+  SuKienRoute: SuKienRoute,
+  TaiKhoanRoute: TaiKhoanRoute,
+  VuonTaoRoute: VuonTaoRoute,
+  SanPhamSlugRoute: SanPhamSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
