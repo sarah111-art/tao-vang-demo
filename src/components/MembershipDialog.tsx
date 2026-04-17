@@ -1,6 +1,7 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
 import { toast } from "sonner";
+import mascot from "@/assets/tao-vang-mascot.png";
 
 type Plan = { months: number; seeds: number };
 const PLANS: Plan[] = [
