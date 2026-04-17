@@ -82,8 +82,14 @@ function ProductDetail() {
       </div>
 
       <Card className="mx-4 -mt-8 p-5 shadow-card space-y-4">
-        <div className="warm-gradient aspect-video rounded-2xl grid place-items-center text-warm-foreground">
-          <Icon className="h-14 w-14 opacity-90" />
+        <div className="aspect-video rounded-2xl overflow-hidden bg-muted">
+          {product.cover_url ? (
+            <img src={product.cover_url} alt={product.title} className="w-full h-full object-cover" />
+          ) : (
+            <div className="warm-gradient w-full h-full grid place-items-center text-warm-foreground">
+              <Icon className="h-14 w-14 opacity-90" />
+            </div>
+          )}
         </div>
         {product.description && (
           <p className="text-sm leading-relaxed text-foreground/80">{product.description}</p>

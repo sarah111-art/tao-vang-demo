@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { AppLayout, PageHeader } from "@/components/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,6 +24,7 @@ type Product = {
   slug: string;
   description: string | null;
   category: "book" | "audio" | "video" | "kids";
+  cover_url: string | null;
   is_featured: boolean;
 };
 
@@ -41,6 +42,35 @@ const categoryIcon: Record<Product["category"], typeof BookOpen> = {
   kids: Sparkles,
 };
 
+const categoryGradient: Record<Product["category"], string> = {
+  book: "from-emerald-400 to-green-600",
+  audio: "from-violet-400 to-purple-600",
+  video: "from-rose-400 to-red-500",
+  kids: "from-amber-400 to-orange-500",
+};
+
+function ProductCover({
+  cover_url, category, className,
+}: { cover_url: string | null; category: Product["category"]; className?: string }) {
+  const Icon = categoryIcon[category];
+  const gradient = categoryGradient[category];
+  if (cover_url) {
+    return (
+      <img
+        src={cover_url}
+        alt=""
+        className={`w-full h-full object-cover ${className ?? ""}`}
+        loading="lazy"
+      />
+    );
+  }
+  return (
+    <div className={`w-full h-full bg-gradient-to-br ${gradient} grid place-items-center text-white ${className ?? ""}`}>
+      <Icon className="h-8 w-8 opacity-80" />
+    </div>
+  );
+}
+
 function ProductsPage() {
   const { profile } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
@@ -48,12 +78,31 @@ function ProductsPage() {
   useEffect(() => {
     void supabase
       .from("products")
-      .select("id,title,slug,description,category,is_featured")
+      .select("id,title,slug,description,category,cover_url,is_featured")
       .order("sort_order")
       .then(({ data }) => setProducts((data ?? []) as Product[]));
   }, []);
 
-  const featured = products.filter((p) => p.is_featured);
+  const featured = products.filter((p) => p.is_featured).slice(0, 4);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (featured.length < 2) return;
+    const id = setInterval(() => {
+      setActiveSlide((prev) => {
+        const next = (prev + 1) % featured.length;
+        const el = scrollRef.current;
+        if (el) {
+          const cardWidth = el.scrollWidth / featured.length;
+          el.scrollTo({ left: next * cardWidth, behavior: "smooth" });
+        }
+        return next;
+      });
+    }, 3000);
+    return () => clearInterval(id);
+  }, [featured.length]);
+
   const grouped = (["book", "audio", "video", "kids"] as const).map((c) => ({
     cat: c,
     items: products.filter((p) => p.category === c),
@@ -65,26 +114,58 @@ function ProductsPage() {
 
       {/* Featured carousel */}
       <section className="-mt-10 px-4">
-        <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-3 -mx-4 px-4">
+        <div
+          ref={scrollRef}
+          className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-3 -mx-4 px-4 scrollbar-hide"
+          style={{ scrollbarWidth: "none" }}
+          onScroll={(e) => {
+            const el = e.currentTarget;
+            const index = Math.round(el.scrollLeft / (el.scrollWidth / featured.length));
+            setActiveSlide(index);
+          }}
+        >
           {featured.map((p, i) => (
             <motion.article
               key={p.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.07 }}
-              className="snap-center shrink-0 w-[80%] rounded-3xl overflow-hidden shadow-card"
+              className="snap-center shrink-0 w-[85%] rounded-3xl overflow-hidden shadow-card"
             >
-              <div className="warm-gradient h-44 grid place-items-center text-primary-foreground p-5 relative">
-                <div className="absolute top-3 left-3 bg-card/30 backdrop-blur text-primary-foreground text-[11px] font-semibold px-2 py-0.5 rounded-full">
-                  {categoryLabel[p.category]}
+              <Link to="/san-pham/$slug" params={{ slug: p.slug }} className="block">
+                <div className="relative h-48 overflow-hidden">
+                  <ProductCover cover_url={p.cover_url} category={p.category} className="rounded-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute top-3 left-3 bg-white/20 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full">
+                    {categoryLabel[p.category]}
+                  </div>
+                  <h3 className="absolute bottom-4 left-4 right-4 text-white text-base font-extrabold leading-snug drop-shadow">
+                    {p.title}
+                  </h3>
                 </div>
-                <h3 className="text-xl font-extrabold text-center leading-snug drop-shadow">
-                  {p.title}
-                </h3>
-              </div>
+              </Link>
             </motion.article>
           ))}
         </div>
+        {/* Dot indicators */}
+        {featured.length > 1 && (
+          <div className="flex justify-center gap-1.5 mt-2">
+            {featured.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => {
+                  const el = scrollRef.current;
+                  if (!el) return;
+                  el.scrollTo({ left: i * (el.scrollWidth / featured.length), behavior: "smooth" });
+                }}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === activeSlide ? "w-5 bg-primary" : "w-1.5 bg-primary/30"
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Grouped sections */}
@@ -107,8 +188,9 @@ function ProductsPage() {
                   params={{ slug: p.slug }}
                   className="group rounded-2xl overflow-hidden bg-card shadow-soft hover:shadow-card transition-shadow"
                 >
-                  <div className="hero-gradient aspect-[4/5] grid place-items-center p-3 text-primary-foreground">
-                    <Icon className="h-8 w-8 opacity-80" />
+                  <div className="aspect-[4/5] overflow-hidden relative">
+                    <ProductCover cover_url={p.cover_url} category={p.category} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                   <div className="p-2.5">
                     <h4 className="text-xs font-semibold line-clamp-2 leading-tight">

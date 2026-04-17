@@ -16,6 +16,7 @@ import { Route as LienHeRouteImport } from './routes/lien-he'
 import { Route as HatGiongRouteImport } from './routes/hat-giong'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SuKienSlugRouteImport } from './routes/su-kien.$slug'
 import { Route as SanPhamSlugRouteImport } from './routes/san-pham.$slug'
 
 const VuonTaoRoute = VuonTaoRouteImport.update({
@@ -53,6 +54,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SuKienSlugRoute = SuKienSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => SuKienRoute,
+} as any)
 const SanPhamSlugRoute = SanPhamSlugRouteImport.update({
   id: '/san-pham/$slug',
   path: '/san-pham/$slug',
@@ -64,20 +70,22 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/hat-giong': typeof HatGiongRoute
   '/lien-he': typeof LienHeRoute
-  '/su-kien': typeof SuKienRoute
+  '/su-kien': typeof SuKienRouteWithChildren
   '/tai-khoan': typeof TaiKhoanRoute
   '/vuon-tao': typeof VuonTaoRoute
   '/san-pham/$slug': typeof SanPhamSlugRoute
+  '/su-kien/$slug': typeof SuKienSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/hat-giong': typeof HatGiongRoute
   '/lien-he': typeof LienHeRoute
-  '/su-kien': typeof SuKienRoute
+  '/su-kien': typeof SuKienRouteWithChildren
   '/tai-khoan': typeof TaiKhoanRoute
   '/vuon-tao': typeof VuonTaoRoute
   '/san-pham/$slug': typeof SanPhamSlugRoute
+  '/su-kien/$slug': typeof SuKienSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -85,10 +93,11 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/hat-giong': typeof HatGiongRoute
   '/lien-he': typeof LienHeRoute
-  '/su-kien': typeof SuKienRoute
+  '/su-kien': typeof SuKienRouteWithChildren
   '/tai-khoan': typeof TaiKhoanRoute
   '/vuon-tao': typeof VuonTaoRoute
   '/san-pham/$slug': typeof SanPhamSlugRoute
+  '/su-kien/$slug': typeof SuKienSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/tai-khoan'
     | '/vuon-tao'
     | '/san-pham/$slug'
+    | '/su-kien/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/tai-khoan'
     | '/vuon-tao'
     | '/san-pham/$slug'
+    | '/su-kien/$slug'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/tai-khoan'
     | '/vuon-tao'
     | '/san-pham/$slug'
+    | '/su-kien/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -128,7 +140,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   HatGiongRoute: typeof HatGiongRoute
   LienHeRoute: typeof LienHeRoute
-  SuKienRoute: typeof SuKienRoute
+  SuKienRoute: typeof SuKienRouteWithChildren
   TaiKhoanRoute: typeof TaiKhoanRoute
   VuonTaoRoute: typeof VuonTaoRoute
   SanPhamSlugRoute: typeof SanPhamSlugRoute
@@ -185,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/su-kien/$slug': {
+      id: '/su-kien/$slug'
+      path: '/$slug'
+      fullPath: '/su-kien/$slug'
+      preLoaderRoute: typeof SuKienSlugRouteImport
+      parentRoute: typeof SuKienRoute
+    }
     '/san-pham/$slug': {
       id: '/san-pham/$slug'
       path: '/san-pham/$slug'
@@ -195,12 +214,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface SuKienRouteChildren {
+  SuKienSlugRoute: typeof SuKienSlugRoute
+}
+
+const SuKienRouteChildren: SuKienRouteChildren = {
+  SuKienSlugRoute: SuKienSlugRoute,
+}
+
+const SuKienRouteWithChildren =
+  SuKienRoute._addFileChildren(SuKienRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   HatGiongRoute: HatGiongRoute,
   LienHeRoute: LienHeRoute,
-  SuKienRoute: SuKienRoute,
+  SuKienRoute: SuKienRouteWithChildren,
   TaiKhoanRoute: TaiKhoanRoute,
   VuonTaoRoute: VuonTaoRoute,
   SanPhamSlugRoute: SanPhamSlugRoute,
@@ -208,3 +238,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { AppLayout } from "@/components/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
+import { Lightbulb } from "lucide-react";
 
 export const Route = createFileRoute("/hat-giong")({
   head: () => ({
@@ -19,78 +20,97 @@ export const Route = createFileRoute("/hat-giong")({
 
 type Seed = { id: string; name: string; color: string };
 
-// Maps seed.color → tailwind gradient pair for the heart-apple
 const colorMap: Record<string, { from: string; to: string }> = {
-  amber:   { from: "#fbbf24", to: "#d97706" },
-  violet:  { from: "#a78bfa", to: "#6d28d9" },
-  emerald: { from: "#34d399", to: "#047857" },
-  green:   { from: "#4ade80", to: "#15803d" },
-  rose:    { from: "#fb7185", to: "#be123c" },
-  purple:  { from: "#c084fc", to: "#7e22ce" },
-  orange:  { from: "#fb923c", to: "#c2410c" },
-  red:     { from: "#f87171", to: "#b91c1c" },
-  indigo:  { from: "#818cf8", to: "#3730a3" },
-  blue:    { from: "#60a5fa", to: "#1d4ed8" },
-  sky:     { from: "#38bdf8", to: "#0369a1" },
-  lime:    { from: "#a3e635", to: "#4d7c0f" },
-  teal:    { from: "#2dd4bf", to: "#0f766e" },
-  pink:    { from: "#f472b6", to: "#be185d" },
-  cyan:    { from: "#22d3ee", to: "#0e7490" },
+  amber:   { from: "#fcd34d", to: "#d97706" },
+  violet:  { from: "#c4b5fd", to: "#7c3aed" },
+  emerald: { from: "#6ee7b7", to: "#059669" },
+  green:   { from: "#86efac", to: "#16a34a" },
+  rose:    { from: "#fda4af", to: "#e11d48" },
+  purple:  { from: "#d8b4fe", to: "#9333ea" },
+  orange:  { from: "#fdba74", to: "#ea580c" },
+  red:     { from: "#fca5a5", to: "#dc2626" },
+  indigo:  { from: "#a5b4fc", to: "#4338ca" },
+  blue:    { from: "#93c5fd", to: "#2563eb" },
+  sky:     { from: "#7dd3fc", to: "#0284c7" },
+  lime:    { from: "#bef264", to: "#65a30d" },
+  teal:    { from: "#5eead4", to: "#0d9488" },
+  pink:    { from: "#f9a8d4", to: "#db2777" },
+  cyan:    { from: "#67e8f9", to: "#0891b2" },
 };
 
-/** Heart-shaped apple with stem leaf, drawn in SVG so it scales perfectly. */
 function HeartApple({ name, color, i }: { name: string; color: string; i: number }) {
   const c = colorMap[color] ?? colorMap.green;
   const gid = `g-${i}`;
   return (
     <motion.button
       type="button"
-      initial={{ opacity: 0, scale: 0.5, y: -10 }}
+      initial={{ opacity: 0, scale: 0.4, y: -16 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ delay: 0.2 + i * 0.04, type: "spring", stiffness: 180, damping: 14 }}
-      whileHover={{ scale: 1.06, rotate: -2 }}
-      whileTap={{ scale: 0.95 }}
+      transition={{ delay: 0.1 + i * 0.035, type: "spring", stiffness: 200, damping: 15 }}
+      whileHover={{ scale: 1.08, rotate: -3 }}
+      whileTap={{ scale: 0.93 }}
       className="relative w-full aspect-square focus:outline-none"
       aria-label={name}
     >
-      <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_6px_8px_rgba(0,0,0,0.18)]">
+      <svg viewBox="0 0 100 110" className="w-full h-full drop-shadow-[0_5px_10px_rgba(0,0,0,0.22)]">
         <defs>
           <radialGradient id={gid} cx="35%" cy="30%" r="75%">
             <stop offset="0%" stopColor={c.from} />
             <stop offset="100%" stopColor={c.to} />
           </radialGradient>
+          <radialGradient id={`${gid}-dark`} cx="50%" cy="50%" r="50%">
+            <stop offset="60%" stopColor="transparent" />
+            <stop offset="100%" stopColor="rgba(0,0,0,0.18)" />
+          </radialGradient>
           <linearGradient id={`${gid}-leaf`} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#86efac" />
+            <stop offset="0%" stopColor="#bbf7d0" />
             <stop offset="100%" stopColor="#15803d" />
           </linearGradient>
         </defs>
-
-        {/* Heart-shaped apple body */}
+        {/* Heart body */}
         <path
-          d="M50 90 C 18 68, 8 44, 22 28 C 32 17, 45 22, 50 33 C 55 22, 68 17, 78 28 C 92 44, 82 68, 50 90 Z"
+          d="M50 95 C 16 72, 6 46, 22 30 C 33 18, 46 24, 50 36 C 54 24, 67 18, 78 30 C 94 46, 84 72, 50 95 Z"
           fill={`url(#${gid})`}
         />
-        {/* Highlight */}
-        <ellipse cx="36" cy="38" rx="10" ry="6" fill="rgba(255,255,255,0.35)" transform="rotate(-25 36 38)" />
-        {/* Stem */}
-        <path d="M50 22 L52 14" stroke="#5a3a1a" strokeWidth="2.4" strokeLinecap="round" />
-        {/* Leaf */}
+        {/* Inner shadow */}
         <path
-          d="M52 16 C 60 10, 70 12, 70 18 C 64 22, 56 22, 52 18 Z"
-          fill={`url(#${gid}-leaf)`}
+          d="M50 95 C 16 72, 6 46, 22 30 C 33 18, 46 24, 50 36 C 54 24, 67 18, 78 30 C 94 46, 84 72, 50 95 Z"
+          fill={`url(#${gid}-dark)`}
         />
+        {/* Highlight */}
+        <ellipse cx="35" cy="42" rx="11" ry="6" fill="rgba(255,255,255,0.38)" transform="rotate(-28 35 42)" />
+        {/* Stem */}
+        <path d="M50 26 Q53 16 55 10" stroke="#5a3a1a" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+        {/* Leaf */}
+        <path d="M55 12 C 64 6, 76 8, 75 15 C 68 20, 58 20, 55 14 Z" fill={`url(#${gid}-leaf)`} />
+        {/* Leaf vein */}
+        <path d="M55 13 L71 14" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" strokeLinecap="round" />
       </svg>
-
-      {/* Label centered on the apple */}
       <span
-        className="absolute inset-0 flex items-center justify-center pointer-events-none px-2 pt-2"
-        style={{ paddingTop: "18%" }}
+        className="absolute inset-0 flex items-center justify-center pointer-events-none px-1"
+        style={{ paddingTop: "14%", paddingBottom: "6%" }}
       >
-        <span className="text-white text-[13px] sm:text-sm font-extrabold text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+        <span className="text-white font-extrabold text-center leading-tight drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]"
+          style={{ fontSize: "clamp(9px, 2.8vw, 13px)" }}>
           {name}
         </span>
       </span>
     </motion.button>
+  );
+}
+
+/** Green leaf SVG for corners */
+function CornerLeaves({ side }: { side: "left" | "right" }) {
+  const flip = side === "right" ? "scale(-1,1)" : undefined;
+  return (
+    <svg viewBox="0 0 160 160" className="absolute top-0 w-40 h-40 pointer-events-none opacity-90"
+      style={{ [side]: 0, transform: flip ? `${flip}` : undefined }}>
+      <ellipse cx="20" cy="30" rx="55" ry="28" fill="#4ade80" transform="rotate(-35 20 30)" />
+      <ellipse cx="40" cy="15" rx="50" ry="22" fill="#22c55e" transform="rotate(-55 40 15)" />
+      <ellipse cx="10" cy="55" rx="45" ry="20" fill="#86efac" transform="rotate(-15 10 55)" />
+      <ellipse cx="60" cy="10" rx="40" ry="18" fill="#16a34a" transform="rotate(-70 60 10)" />
+      <ellipse cx="30" cy="75" rx="38" ry="16" fill="#4ade80" transform="rotate(-5 30 75)" />
+    </svg>
   );
 }
 
@@ -106,102 +126,105 @@ function SeedsPage() {
       .then(({ data }) => setSeeds((data ?? []) as Seed[]));
   }, []);
 
+  const rows = [];
+  for (let i = 0; i < seeds.length; i += 4) {
+    rows.push(seeds.slice(i, i + 4));
+  }
+
   return (
     <AppLayout>
       <div
         className="relative min-h-[calc(100dvh-4rem)] overflow-hidden"
-        style={{
-          background:
-            "radial-gradient(ellipse at top, oklch(0.97 0.04 130) 0%, oklch(0.99 0.01 130) 60%, oklch(0.96 0.05 90) 100%)",
-        }}
+        style={{ background: "linear-gradient(180deg, #f0fdf4 0%, #fefce8 60%, #fff7ed 100%)" }}
       >
-        {/* Foliage corners */}
-        <div className="pointer-events-none absolute -top-6 -left-6 h-40 w-40 rounded-full bg-[radial-gradient(circle,oklch(0.78_0.16_142_/_0.55),transparent_70%)]" />
-        <div className="pointer-events-none absolute -top-10 -right-10 h-48 w-48 rounded-full bg-[radial-gradient(circle,oklch(0.78_0.16_142_/_0.55),transparent_70%)]" />
+        {/* Corner leaves */}
+        <CornerLeaves side="left" />
+        <CornerLeaves side="right" />
 
-        {/* Header banner */}
-        <header className="relative z-10 px-5 pt-8 pb-6 text-center">
-          <div className="inline-block">
-            <h1
-              className="font-extrabold uppercase leading-[1.05] tracking-tight text-3xl sm:text-4xl md:text-5xl"
-              style={{
-                color: "#fff48a",
-                WebkitTextStroke: "2px #b45309",
-                textShadow:
-                  "0 3px 0 #b45309, 0 6px 14px rgba(180,83,9,0.35)",
-                fontFamily: "'Be Vietnam Pro', system-ui, sans-serif",
-              }}
-            >
-              Chăm hạt giống
-              <br />
-              Sống vui tươi
-              <br />
-              Thành công, giúp ích
-            </h1>
-          </div>
-          <p className="mt-3 text-xs font-semibold text-warm">
+        {/* Title */}
+        <header className="relative z-10 px-4 pt-10 pb-2 text-center">
+          <h1
+            className="font-extrabold uppercase leading-[1.1] tracking-tight"
+            style={{
+              fontSize: "clamp(24px, 7vw, 38px)",
+              color: "#fef08a",
+              WebkitTextStroke: "2.5px #92400e",
+              textShadow: "0 3px 0 #92400e, 0 6px 18px rgba(146,64,14,0.3)",
+              fontFamily: "'Be Vietnam Pro', system-ui, sans-serif",
+            }}
+          >
+            Chăm hạt giống
+            <br />
+            Sống vui tươi
+            <br />
+            Thành công, giúp ích
+          </h1>
+
+          {/* Lightbulb */}
+          <motion.div
+            initial={{ scale: 0, rotate: -20 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ delay: 0.3, type: "spring", stiffness: 200, damping: 14 }}
+            className="mx-auto mt-4 mb-1 w-14 h-14 rounded-full bg-white shadow-warm border-2 border-amber-200 grid place-items-center"
+          >
+            <Lightbulb className="h-7 w-7 text-amber-400 fill-amber-100" />
+          </motion.div>
+
+          <p className="text-xs font-semibold text-amber-600 mt-1">
             {profile?.seed_count ?? 0} hạt trong túi
           </p>
         </header>
 
-        {/* Tree composition */}
-        <div className="relative z-10 mx-auto max-w-2xl px-3 sm:px-6 pb-16">
-          {/* Trunk + branches behind the grid */}
+        {/* Tree + apples */}
+        <div className="relative z-10 mx-auto max-w-sm px-3 pb-20">
+          {/* Tree SVG behind apples */}
           <svg
-            className="absolute inset-x-0 top-0 mx-auto h-full w-full pointer-events-none"
-            viewBox="0 0 400 1000"
-            preserveAspectRatio="none"
+            className="absolute inset-x-0 top-0 mx-auto w-full pointer-events-none"
+            style={{ height: `${rows.length * 110 + 40}px` }}
+            viewBox={`0 0 320 ${rows.length * 110 + 40}`}
+            preserveAspectRatio="xMidYMid meet"
             aria-hidden="true"
           >
             <defs>
-              <linearGradient id="trunk" x1="0" y1="0" x2="1" y2="0">
+              <linearGradient id="trunk-grad" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stopColor="#7a4a1d" />
-                <stop offset="50%" stopColor="#a8682f" />
+                <stop offset="45%" stopColor="#b07540" />
                 <stop offset="100%" stopColor="#6b3e15" />
               </linearGradient>
             </defs>
             {/* Main trunk */}
             <path
-              d="M200 0 C 195 200, 205 500, 200 1000"
-              stroke="url(#trunk)"
-              strokeWidth="34"
-              strokeLinecap="round"
-              fill="none"
+              d={`M160 0 C 156 ${rows.length * 55}, 164 ${rows.length * 80}, 160 ${rows.length * 110 + 40}`}
+              stroke="url(#trunk-grad)" strokeWidth="28" strokeLinecap="round" fill="none"
             />
-            {/* Branches — alternating left/right per row */}
-            {[120, 270, 420, 570, 720, 870].map((y, idx) => (
-              <g key={y}>
-                <path
-                  d={`M200 ${y} C 130 ${y - 10}, 70 ${y + 10}, 30 ${y}`}
-                  stroke="url(#trunk)"
-                  strokeWidth={idx % 2 === 0 ? 16 : 14}
-                  strokeLinecap="round"
-                  fill="none"
-                />
-                <path
-                  d={`M200 ${y} C 270 ${y - 10}, 330 ${y + 10}, 370 ${y}`}
-                  stroke="url(#trunk)"
-                  strokeWidth={idx % 2 === 0 ? 14 : 16}
-                  strokeLinecap="round"
-                  fill="none"
-                />
-              </g>
-            ))}
-          </svg>
-
-          {/* Apple grid */}
-          <div className="relative grid grid-cols-4 gap-x-2 gap-y-5 sm:gap-x-4 sm:gap-y-7">
-            {seeds.map((s, i) => {
-              // Stagger every other row to feel organic
-              const row = Math.floor(i / 4);
-              const col = i % 4;
-              const offsetY = (col % 2 === 0 ? 0 : 12) + (row % 2 === 0 ? 0 : 4);
+            {/* Branches per row */}
+            {rows.map((_, ri) => {
+              const y = ri * 110 + 55;
               return (
-                <div key={s.id} style={{ transform: `translateY(${offsetY}px)` }}>
-                  <HeartApple name={s.name} color={s.color} i={i} />
-                </div>
+                <g key={ri}>
+                  <path d={`M160 ${y} C 110 ${y - 8}, 55 ${y + 5}, 20 ${y - 2}`}
+                    stroke="url(#trunk-grad)" strokeWidth="14" strokeLinecap="round" fill="none" />
+                  <path d={`M160 ${y} C 210 ${y - 8}, 265 ${y + 5}, 300 ${y - 2}`}
+                    stroke="url(#trunk-grad)" strokeWidth="14" strokeLinecap="round" fill="none" />
+                </g>
               );
             })}
+          </svg>
+
+          {/* Apple rows */}
+          <div className="relative flex flex-col gap-4 pt-2">
+            {rows.map((row, ri) => (
+              <div key={ri} className="grid grid-cols-4 gap-2">
+                {row.map((s, ci) => {
+                  const offsetY = ci % 2 === 0 ? 0 : 10;
+                  return (
+                    <div key={s.id} style={{ transform: `translateY(${offsetY}px)` }}>
+                      <HeartApple name={s.name} color={s.color} i={ri * 4 + ci} />
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
           </div>
         </div>
       </div>
