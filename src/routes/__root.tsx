@@ -35,9 +35,11 @@ export const Route = createRootRoute({
       { title: "Táo Vàng — Khoá học gieo hạt giống tâm hồn" },
       { name: "description", content: "Khoá học và sách nói Táo Vàng — sản phẩm, hạt giống đức tính, vườn táo, sự kiện và tài khoản thành viên." },
       { property: "og:title", content: "Táo Vàng — Khoá học gieo hạt giống tâm hồn" },
-      { property: "og:description", content: "Sản phẩm, sách nói, audio & video, sự kiện và cộng đồng Táo Vàng." },
+      { property: "og:description", content: "Khoá học và sách nói Táo Vàng — sản phẩm, hạt giống đức tính, vườn táo, sự kiện và tài khoản thành viên." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Táo Vàng — Khoá học gieo hạt giống tâm hồn" },
+      { name: "twitter:description", content: "Khoá học và sách nói Táo Vàng — sản phẩm, hạt giống đức tính, vườn táo, sự kiện và tài khoản thành viên." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
