@@ -1,14 +1,21 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Sprout, TreeDeciduous, Ticket, UserCircle2 } from "lucide-react";
+import { Home, Sprout, TreeDeciduous, Ticket, UserCircle2, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
-const tabs = [
+type Tab = {
+  to: "/" | "/hat-giong" | "/vuon-tao" | "/su-kien" | "/tai-khoan";
+  label: string;
+  icon: LucideIcon;
+  center?: boolean;
+};
+
+const tabs: Tab[] = [
   { to: "/", label: "Sản phẩm", icon: Home },
   { to: "/hat-giong", label: "Hạt giống", icon: Sprout },
   { to: "/vuon-tao", label: "Vườn Táo", icon: TreeDeciduous, center: true },
   { to: "/su-kien", label: "Sự kiện", icon: Ticket },
   { to: "/tai-khoan", label: "Tài khoản", icon: UserCircle2 },
-] as const;
+];
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const loc = useLocation();
@@ -16,7 +23,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
     <div className="phone-frame flex flex-col">
       <main className="flex-1 overflow-y-auto pb-24">{children}</main>
 
-      {/* Bottom Nav */}
       <nav className="absolute bottom-0 left-0 right-0 bg-card/95 backdrop-blur border-t border-border">
         <ul className="grid grid-cols-5 items-end px-2 pt-2 pb-3">
           {tabs.map((t) => {
@@ -25,10 +31,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             if (t.center) {
               return (
                 <li key={t.to} className="flex justify-center">
-                  <Link
-                    to={t.to}
-                    className="-mt-7 flex flex-col items-center gap-1"
-                  >
+                  <Link to={t.to} className="-mt-7 flex flex-col items-center gap-1">
                     <span className="hero-gradient h-14 w-14 rounded-full grid place-items-center shadow-warm ring-4 ring-card">
                       <Icon className="h-7 w-7 text-primary-foreground" />
                     </span>
@@ -74,5 +77,3 @@ export function PageHeader({ title, seedCount = 0 }: { title: string; seedCount?
     </header>
   );
 }
-
-import { Sprout as _S } from "lucide-react";
