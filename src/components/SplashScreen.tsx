@@ -14,7 +14,7 @@ export function SplashScreen() {
     const t = setTimeout(() => {
       sessionStorage.setItem("tv_splash_seen", "1");
       setShow(false);
-    }, 3000);
+    }, 2000);
     return () => clearTimeout(t);
   }, []);
 
@@ -25,7 +25,7 @@ export function SplashScreen() {
           key="splash"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.3 }}
           className="fixed inset-0 z-[100] bg-background overflow-hidden"
           aria-hidden="true"
         >
