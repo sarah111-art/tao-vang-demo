@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +10,44 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { ArrowLeft, Sprout } from "lucide-react";
+
+function GoogleButton() {
+  const [busy, setBusy] = useState(false);
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      className="w-full"
+      disabled={busy}
+      onClick={async () => {
+        setBusy(true);
+        const result = await lovable.auth.signInWithOAuth("google", {
+          redirect_uri: window.location.origin + "/tai-khoan",
+        });
+        if (result.error) {
+          setBusy(false);
+          toast.error("Không đăng nhập được với Google");
+          return;
+        }
+        if (result.redirected) return;
+      }}
+    >
+      <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="#EA4335" d="M12 10.2v3.9h5.4c-.2 1.4-1.6 4-5.4 4-3.3 0-5.9-2.7-5.9-6.1S8.7 5.9 12 5.9c1.8 0 3.1.8 3.8 1.5l2.6-2.5C16.8 3.4 14.6 2.5 12 2.5 6.8 2.5 2.5 6.8 2.5 12S6.8 21.5 12 21.5c6.9 0 9.5-4.8 9.5-9 0-.6-.1-1.1-.2-1.6H12z"/>
+      </svg>
+      {busy ? "Đang chuyển..." : "Tiếp tục với Google"}
+    </Button>
+  );
+}
+
+function Divider() {
+  return (
+    <div className="relative my-4">
+      <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+      <div className="relative flex justify-center text-xs"><span className="bg-card px-2 text-muted-foreground">hoặc</span></div>
+    </div>
+  );
+}
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -52,9 +91,13 @@ function AuthPage() {
             <TabsTrigger value="signup">Đăng ký</TabsTrigger>
           </TabsList>
           <TabsContent value="signin" className="mt-4">
+            <GoogleButton />
+            <Divider />
             <SignInForm />
           </TabsContent>
           <TabsContent value="signup" className="mt-4">
+            <GoogleButton />
+            <Divider />
             <SignUpForm />
           </TabsContent>
         </Tabs>
