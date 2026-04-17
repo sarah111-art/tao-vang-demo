@@ -112,14 +112,47 @@ export function SplashScreen() {
                 </text>
               </svg>
 
-              {/* Logo */}
-              <img
-                src="https://apptaovang.com/wp-content/uploads/2023/02/logo-tao-vang-new.webp"
-                alt="Táo Vàng"
-                className="h-32 sm:h-40 w-auto mx-auto drop-shadow-[0_6px_20px_rgba(180,83,9,0.35)]"
-                loading="eager"
-                decoding="async"
-              />
+              {/* Logo with spinning ring */}
+              <div className="relative mx-auto h-40 w-40 sm:h-48 sm:w-48 grid place-items-center">
+                <motion.svg
+                  viewBox="0 0 100 100"
+                  className="absolute inset-0 w-full h-full"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 2.4, repeat: Infinity, ease: "linear" }}
+                >
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="46"
+                    fill="none"
+                    stroke="oklch(0.55 0.16 145)"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeDasharray="6 10"
+                    opacity="0.85"
+                  />
+                  <circle cx="50" cy="4" r="3.5" fill="oklch(0.78 0.17 90)" />
+                  <circle cx="96" cy="50" r="2.5" fill="oklch(0.55 0.16 145)" />
+                  <circle cx="50" cy="96" r="2.5" fill="oklch(0.55 0.16 145)" />
+                  <circle cx="4" cy="50" r="2.5" fill="oklch(0.78 0.17 90)" />
+                </motion.svg>
+                <motion.div
+                  className="absolute inset-3 rounded-full"
+                  style={{
+                    background:
+                      "radial-gradient(circle, oklch(0.92 0.10 90 / 0.6) 0%, transparent 70%)",
+                  }}
+                  animate={{ scale: [1, 1.08, 1], opacity: [0.5, 0.85, 0.5] }}
+                  transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                />
+                <img
+                  src="https://apptaovang.com/wp-content/uploads/2023/02/logo-tao-vang-new.webp"
+                  alt="Táo Vàng"
+                  className="relative h-28 sm:h-36 w-auto drop-shadow-[0_6px_20px_rgba(180,83,9,0.35)]"
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
 
               {/* Curved bottom text */}
               <svg viewBox="0 0 320 70" className="w-72 sm:w-80 h-auto -mt-2">
