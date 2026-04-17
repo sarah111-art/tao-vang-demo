@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppLayout, PageHeader } from "@/components/AppLayout";
+import { MembershipDialog } from "@/components/MembershipDialog";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -22,6 +23,7 @@ function AccountPage() {
   const { user, profile, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
+  const [membershipOpen, setMembershipOpen] = useState(false);
 
   if (loading) {
     return (
@@ -105,7 +107,10 @@ function AccountPage() {
             ? `${Math.max(0, Math.ceil((+new Date(profile.member_until) - Date.now()) / 86400000))} ngày`
             : "0 ngày"}
         </p>
-        <Button className="w-full warm-gradient text-warm-foreground border-0 hover:opacity-90">
+        <Button
+          className="w-full warm-gradient text-warm-foreground border-0 hover:opacity-90"
+          onClick={() => setMembershipOpen(true)}
+        >
           <Crown className="h-4 w-4 mr-2" /> Kích hoạt thành viên Táo Vàng
         </Button>
         <Button className="w-full bg-[oklch(0.62_0.16_240)] hover:bg-[oklch(0.55_0.18_240)] text-primary-foreground">
@@ -137,6 +142,8 @@ function AccountPage() {
       </Card>
 
       <div className="h-8" />
+
+      <MembershipDialog open={membershipOpen} onOpenChange={setMembershipOpen} />
     </AppLayout>
   );
 }
