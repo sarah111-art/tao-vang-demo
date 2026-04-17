@@ -25,10 +25,13 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <header className="hidden md:block sticky top-0 z-40 bg-card/90 backdrop-blur border-b border-border">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <span className="hero-gradient h-9 w-9 rounded-full grid place-items-center shadow-warm">
-              <Sprout className="h-5 w-5 text-primary-foreground" />
-            </span>
-            <span className="font-extrabold text-lg tracking-tight">Táo Vàng</span>
+            <img
+              src="https://apptaovang.com/wp-content/uploads/2023/02/logo-tao-vang-new.webp"
+              alt="Táo Vàng"
+              className="h-10 w-auto"
+              loading="eager"
+              decoding="async"
+            />
           </Link>
           <nav>
             <ul className="flex items-center gap-1">
