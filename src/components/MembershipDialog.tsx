@@ -31,7 +31,7 @@ export function MembershipDialog({
         <div className="relative rounded-3xl overflow-hidden bg-white">
           {/* Watercolor green header */}
           <div
-            className="relative h-64 flex items-end justify-center"
+            className="relative h-72 flex items-end justify-center"
             style={{
               background:
                 "radial-gradient(120% 90% at 50% 0%, oklch(0.88 0.14 138) 0%, oklch(0.78 0.16 142) 45%, oklch(0.96 0.04 130) 100%)",
@@ -51,9 +51,14 @@ export function MembershipDialog({
             </svg>
 
             {/* Mascot */}
-            <div className="relative z-10 mb-6 text-center">
-              <div className="text-7xl drop-shadow-lg">🍏</div>
-            </div>
+            <img
+              src={mascot}
+              alt="Linh vật Táo Vàng"
+              width={1024}
+              height={1024}
+              loading="lazy"
+              className="relative z-10 w-52 h-52 object-contain drop-shadow-xl -mb-2"
+            />
           </div>
 
           {/* Title */}
