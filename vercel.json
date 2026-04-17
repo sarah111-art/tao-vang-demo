@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "public": true,
+  "rewrites": [
+    { "source": "/assets/(.*)", "destination": "/dist/client/assets/$1" },
+    { "source": "/(.*)", "destination": "/dist/client/index.html" }
+  ]
+}
