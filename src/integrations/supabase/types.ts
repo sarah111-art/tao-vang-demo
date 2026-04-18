@@ -323,6 +323,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      unlock_product: {
+        Args: { p_product_id: string; p_seeds_cost?: number }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "admin" | "user"
