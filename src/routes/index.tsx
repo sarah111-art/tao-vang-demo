@@ -295,7 +295,14 @@ function ProductsPage() {
               >
                 <div className="relative h-48 overflow-hidden">
                   {p.cover_url ? (
-                    <img src={p.cover_url} alt="" className="w-full h-full object-cover" loading="lazy" />
+                    <img
+                      src={p.cover_url}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      loading={i === 0 ? "eager" : "lazy"}
+                      fetchPriority={i === 0 ? "high" : "auto"}
+                      decoding={i === 0 ? "sync" : "async"}
+                    />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-emerald-400 to-green-600" />
                   )}

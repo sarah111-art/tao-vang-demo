@@ -1,4 +1,4 @@
--- Bảng lưu sản phẩm người dùng đã mở khóa
+-- 1. Bảng lưu sản phẩm người dùng đã mở khóa (Dùng IF NOT EXISTS là chuẩn rồi)
 CREATE TABLE IF NOT EXISTS public.user_products (
   id         uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id    uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -8,7 +8,15 @@ CREATE TABLE IF NOT EXISTS public.user_products (
   UNIQUE(user_id, product_id)
 );
 
+-- 2. Bật RLS
 ALTER TABLE public.user_products ENABLE ROW LEVEL SECURITY;
+
+-- 3. Cấu hình Policy (Sửa đoạn này để tránh lỗi "already exists")
+DO $$ 
+BEGIN
+    DROP POLICY IF EXISTS "select_own" ON public.user_products;
+    DROP POLICY IF EXISTS "insert_own" ON public.user_products;
+END $$;
 
 CREATE POLICY "select_own" ON public.user_products
   FOR SELECT USING (auth.uid() = user_id);
@@ -16,7 +24,7 @@ CREATE POLICY "select_own" ON public.user_products
 CREATE POLICY "insert_own" ON public.user_products
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
--- Hàm unlock atomic: kiểm tra hạt → trừ hạt → ghi user_products
+-- 4. Hàm unlock atomic (Dùng CREATE OR REPLACE nên không lo bị lỗi tồn tại)
 CREATE OR REPLACE FUNCTION public.unlock_product(p_product_id uuid, p_seeds_cost integer)
 RETURNS json
 LANGUAGE plpgsql

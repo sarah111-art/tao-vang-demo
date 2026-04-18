@@ -9,7 +9,9 @@ ALTER TABLE public.products ADD CONSTRAINT products_category_check
   CHECK (category IN ('book','audio','video','kids','kids_pro'));
 
 -- Clear old demo data
-TRUNCATE TABLE public.products;
+-- Xóa bảng phụ trước để gỡ bỏ ràng buộc khóa ngoại
+TRUNCATE TABLE public.user_products CASCADE; 
+TRUNCATE TABLE public.products RESTART IDENTITY CASCADE;
 
 -- ===== Táo Vàng (book) — full-width cards =====
 INSERT INTO public.products (title, slug, description, category, cover_url, is_featured, sort_order, price_seeds, requires_membership) VALUES

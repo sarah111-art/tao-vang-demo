@@ -43,12 +43,28 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      // Font preconnects
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      // Preload font CSS so it doesn't block render
+      {
+        rel: "preload",
+        href: "https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap",
+        as: "style",
+      },
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap",
+        media: "print",
+        // @ts-expect-error onload is valid HTML but not in TS types
+        onload: "this.media='all'",
       },
+      // Preconnect for product images
+      { rel: "preconnect", href: "https://images.unsplash.com" },
+      { rel: "dns-prefetch", href: "https://images.unsplash.com" },
+      // Preconnect for Supabase API
+      { rel: "preconnect", href: "https://bsqvduivcapvulaoybwf.supabase.co" },
+      { rel: "dns-prefetch", href: "https://bsqvduivcapvulaoybwf.supabase.co" },
     ],
   }),
   shellComponent: RootShell,
