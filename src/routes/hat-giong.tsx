@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useChildMatches, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { AppLayout } from "@/components/AppLayout";
@@ -15,10 +15,16 @@ export const Route = createFileRoute("/hat-giong")({
       { property: "og:description", content: "Chăm hạt giống — sống vui tươi, thành công, giúp ích." },
     ],
   }),
-  component: SeedsPage,
+  component: HatGiongRoot,
 });
 
-type Seed = { id: string; name: string; color: string };
+function HatGiongRoot() {
+  const childMatches = useChildMatches();
+  if (childMatches.length > 0) return <Outlet />;
+  return <SeedsPage />;
+}
+
+type Seed = { id: string; name: string; color: string; video_url: string | null };
 
 const colorMap: Record<string, { from: string; to: string }> = {
   amber:   { from: "#fcd34d", to: "#d97706" },
@@ -38,7 +44,7 @@ const colorMap: Record<string, { from: string; to: string }> = {
   cyan:    { from: "#67e8f9", to: "#0891b2" },
 };
 
-function HeartApple({ name, color, i }: { name: string; color: string; i: number }) {
+function HeartApple({ name, color, i, onClick }: { name: string; color: string; i: number; onClick?: () => void }) {
   const c = colorMap[color] ?? colorMap.green;
   const gid = `g-${i}`;
   return (
@@ -51,6 +57,7 @@ function HeartApple({ name, color, i }: { name: string; color: string; i: number
       whileTap={{ scale: 0.93 }}
       className="relative w-full aspect-square focus:outline-none"
       aria-label={name}
+      onClick={onClick}
     >
       <svg viewBox="0 0 100 110" className="w-full h-full drop-shadow-[0_5px_10px_rgba(0,0,0,0.22)]">
         <defs>
@@ -115,13 +122,17 @@ function CornerLeaves({ side }: { side: "left" | "right" }) {
 }
 
 function SeedsPage() {
+  const childMatches = useChildMatches();
+  if (childMatches.length > 0) return <Outlet />;
+
   const { profile } = useAuth();
+  const navigate = useNavigate();
   const [seeds, setSeeds] = useState<Seed[]>([]);
 
   useEffect(() => {
     void supabase
       .from("seeds")
-      .select("id,name,color")
+      .select("id,name,color,sort_order,video_url")
       .order("sort_order")
       .then(({ data }) => setSeeds((data ?? []) as Seed[]));
   }, []);
@@ -219,7 +230,12 @@ function SeedsPage() {
                   const offsetY = ci % 2 === 0 ? 0 : 10;
                   return (
                     <div key={s.id} style={{ transform: `translateY(${offsetY}px)` }}>
-                      <HeartApple name={s.name} color={s.color} i={ri * 4 + ci} />
+                      <HeartApple
+                        name={s.name}
+                        color={s.color}
+                        i={ri * 4 + ci}
+                        onClick={() => void navigate({ to: "/hat-giong/$id", params: { id: s.id } })}
+                      />
                     </div>
                   );
                 })}

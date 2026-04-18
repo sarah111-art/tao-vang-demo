@@ -107,6 +107,30 @@ export type Database = {
         }
         Relationships: []
       }
+      user_products: {
+        Row: {
+          id: string
+          user_id: string
+          product_id: string
+          seeds_paid: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          product_id: string
+          seeds_paid?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          product_id?: string
+          seeds_paid?: number
+          created_at?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string
@@ -116,6 +140,8 @@ export type Database = {
           description: string | null
           id: string
           is_featured: boolean
+          price_seeds: number | null
+          requires_membership: boolean
           slug: string
           sort_order: number
           title: string
@@ -129,6 +155,8 @@ export type Database = {
           description?: string | null
           id?: string
           is_featured?: boolean
+          price_seeds?: number | null
+          requires_membership?: boolean
           slug: string
           sort_order?: number
           title: string
@@ -142,6 +170,8 @@ export type Database = {
           description?: string | null
           id?: string
           is_featured?: boolean
+          price_seeds?: number | null
+          requires_membership?: boolean
           slug?: string
           sort_order?: number
           title?: string
@@ -274,6 +304,7 @@ export type Database = {
           id: string
           name: string
           sort_order: number
+          video_url: string | null
         }
         Insert: {
           color?: string
@@ -282,6 +313,7 @@ export type Database = {
           id?: string
           name: string
           sort_order?: number
+          video_url?: string | null
         }
         Update: {
           color?: string
@@ -290,6 +322,7 @@ export type Database = {
           id?: string
           name?: string
           sort_order?: number
+          video_url?: string | null
         }
         Relationships: []
       }
@@ -325,6 +358,13 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      unlock_product: {
+        Args: {
+          p_product_id: string
+          p_seeds_cost: number
+        }
+        Returns: { ok: boolean; error?: string }
       }
     }
     Enums: {

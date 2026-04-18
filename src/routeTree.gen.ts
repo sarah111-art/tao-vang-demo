@@ -18,6 +18,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SuKienSlugRouteImport } from './routes/su-kien.$slug'
 import { Route as SanPhamSlugRouteImport } from './routes/san-pham.$slug'
+import { Route as HatGiongIdRouteImport } from './routes/hat-giong.$id'
 
 const VuonTaoRoute = VuonTaoRouteImport.update({
   id: '/vuon-tao',
@@ -64,26 +65,33 @@ const SanPhamSlugRoute = SanPhamSlugRouteImport.update({
   path: '/san-pham/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HatGiongIdRoute = HatGiongIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => HatGiongRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/hat-giong': typeof HatGiongRoute
+  '/hat-giong': typeof HatGiongRouteWithChildren
   '/lien-he': typeof LienHeRoute
   '/su-kien': typeof SuKienRouteWithChildren
   '/tai-khoan': typeof TaiKhoanRoute
   '/vuon-tao': typeof VuonTaoRoute
+  '/hat-giong/$id': typeof HatGiongIdRoute
   '/san-pham/$slug': typeof SanPhamSlugRoute
   '/su-kien/$slug': typeof SuKienSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/hat-giong': typeof HatGiongRoute
+  '/hat-giong': typeof HatGiongRouteWithChildren
   '/lien-he': typeof LienHeRoute
   '/su-kien': typeof SuKienRouteWithChildren
   '/tai-khoan': typeof TaiKhoanRoute
   '/vuon-tao': typeof VuonTaoRoute
+  '/hat-giong/$id': typeof HatGiongIdRoute
   '/san-pham/$slug': typeof SanPhamSlugRoute
   '/su-kien/$slug': typeof SuKienSlugRoute
 }
@@ -91,11 +99,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/hat-giong': typeof HatGiongRoute
+  '/hat-giong': typeof HatGiongRouteWithChildren
   '/lien-he': typeof LienHeRoute
   '/su-kien': typeof SuKienRouteWithChildren
   '/tai-khoan': typeof TaiKhoanRoute
   '/vuon-tao': typeof VuonTaoRoute
+  '/hat-giong/$id': typeof HatGiongIdRoute
   '/san-pham/$slug': typeof SanPhamSlugRoute
   '/su-kien/$slug': typeof SuKienSlugRoute
 }
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
     | '/su-kien'
     | '/tai-khoan'
     | '/vuon-tao'
+    | '/hat-giong/$id'
     | '/san-pham/$slug'
     | '/su-kien/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
     | '/su-kien'
     | '/tai-khoan'
     | '/vuon-tao'
+    | '/hat-giong/$id'
     | '/san-pham/$slug'
     | '/su-kien/$slug'
   id:
@@ -131,6 +142,7 @@ export interface FileRouteTypes {
     | '/su-kien'
     | '/tai-khoan'
     | '/vuon-tao'
+    | '/hat-giong/$id'
     | '/san-pham/$slug'
     | '/su-kien/$slug'
   fileRoutesById: FileRoutesById
@@ -138,7 +150,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
-  HatGiongRoute: typeof HatGiongRoute
+  HatGiongRoute: typeof HatGiongRouteWithChildren
   LienHeRoute: typeof LienHeRoute
   SuKienRoute: typeof SuKienRouteWithChildren
   TaiKhoanRoute: typeof TaiKhoanRoute
@@ -211,8 +223,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SanPhamSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/hat-giong/$id': {
+      id: '/hat-giong/$id'
+      path: '/$id'
+      fullPath: '/hat-giong/$id'
+      preLoaderRoute: typeof HatGiongIdRouteImport
+      parentRoute: typeof HatGiongRoute
+    }
   }
 }
+
+interface HatGiongRouteChildren {
+  HatGiongIdRoute: typeof HatGiongIdRoute
+}
+
+const HatGiongRouteChildren: HatGiongRouteChildren = {
+  HatGiongIdRoute: HatGiongIdRoute,
+}
+
+const HatGiongRouteWithChildren = HatGiongRoute._addFileChildren(
+  HatGiongRouteChildren,
+)
 
 interface SuKienRouteChildren {
   SuKienSlugRoute: typeof SuKienSlugRoute
@@ -228,7 +259,7 @@ const SuKienRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
-  HatGiongRoute: HatGiongRoute,
+  HatGiongRoute: HatGiongRouteWithChildren,
   LienHeRoute: LienHeRoute,
   SuKienRoute: SuKienRouteWithChildren,
   TaiKhoanRoute: TaiKhoanRoute,

@@ -1,21 +1,27 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Sprout, TreeDeciduous, Ticket, UserCircle2, type LucideIcon } from "lucide-react";
+import { Home, Sprout, Ticket, UserCircle2, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
 type Tab = {
   to: "/" | "/hat-giong" | "/vuon-tao" | "/su-kien" | "/tai-khoan";
   label: string;
-  icon: LucideIcon;
+  icon: LucideIcon | string;
   center?: boolean;
 };
 
 const tabs: Tab[] = [
   { to: "/", label: "Sản phẩm", icon: Home },
   { to: "/hat-giong", label: "Hạt giống", icon: Sprout },
-  { to: "/vuon-tao", label: "Vườn Táo", icon: TreeDeciduous, center: true },
+  { to: "/vuon-tao", label: "Vườn Táo", icon: "https://apptaovang.com/wp-content/uploads/2023/09/logo-tao-vang.webp", center: true },
   { to: "/su-kien", label: "Sự kiện", icon: Ticket },
   { to: "/tai-khoan", label: "Tài khoản", icon: UserCircle2 },
 ];
+
+function TabIcon({ icon, label, className }: { icon: LucideIcon | string; label: string; className?: string }) {
+  if (typeof icon === "string") return <img src={icon} alt={label} className={className} />;
+  const Icon = icon;
+  return <Icon className={className ?? ""} />;
+}
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const loc = useLocation();
@@ -37,7 +43,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <ul className="flex items-center gap-1">
               {tabs.map((t) => {
                 const active = loc.pathname === t.to;
-                const Icon = t.icon;
                 return (
                   <li key={t.to}>
                     <Link
@@ -48,7 +53,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                           : "text-muted-foreground hover:text-foreground hover:bg-accent"
                       }`}
                     >
-                      <Icon className="h-4 w-4" />
+                      <TabIcon icon={t.icon} label={t.label} className="h-4 w-4 rounded-full object-cover" />
                       {t.label}
                     </Link>
                   </li>
@@ -68,13 +73,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <ul className="grid grid-cols-5 items-end px-2 pt-2 pb-3 max-w-md mx-auto">
           {tabs.map((t) => {
             const active = loc.pathname === t.to;
-            const Icon = t.icon;
             if (t.center) {
               return (
                 <li key={t.to} className="flex justify-center">
                   <Link to={t.to} className="-mt-7 flex flex-col items-center gap-1">
-                    <span className="hero-gradient h-14 w-14 rounded-full grid place-items-center shadow-warm ring-4 ring-card">
-                      <Icon className="h-7 w-7 text-primary-foreground" />
+                    <span className="hero-gradient h-14 w-14 rounded-full grid place-items-center shadow-warm ring-4 ring-card overflow-hidden">
+                      <TabIcon icon={t.icon} label={t.label} className="h-10 w-10 object-contain" />
                     </span>
                     <span className={`text-[11px] ${active ? "tab-active font-semibold" : "text-muted-foreground"}`}>
                       {t.label}
@@ -89,7 +93,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                   to={t.to}
                   className={`flex flex-col items-center gap-1 py-1 ${active ? "tab-active" : "text-muted-foreground"}`}
                 >
-                  <Icon className={`h-5 w-5 ${active ? "fill-primary/15" : ""}`} />
+                  <TabIcon icon={t.icon} label={t.label} className={`h-5 w-5 ${active ? "fill-primary/15" : ""}`} />
                   <span className={`text-[11px] ${active ? "font-semibold" : ""}`}>{t.label}</span>
                 </Link>
               </li>
