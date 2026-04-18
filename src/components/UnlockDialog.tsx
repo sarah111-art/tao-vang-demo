@@ -45,8 +45,9 @@ export function UnlockDialog({
       p_seeds_cost: seedPrice,
     });
     setBusy(false);
-    if (error || !data?.ok) {
-      toast.error(data?.error ?? "Có lỗi xảy ra, vui lòng thử lại.");
+    const result = data as { ok?: boolean; error?: string } | null;
+    if (error || !result?.ok) {
+      toast.error(result?.error ?? "Có lỗi xảy ra, vui lòng thử lại.");
       return;
     }
     await refreshProfile();
