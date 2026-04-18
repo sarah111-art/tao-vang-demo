@@ -67,6 +67,19 @@ function InputField({
   const isPassword = type === "password";
   const inputType = isPassword ? (show ? "text" : "password") : type;
 
+  const handleInvalid = (e: React.InvalidEvent<HTMLInputElement>) => {
+    const el = e.currentTarget;
+    if (el.validity.valueMissing) {
+      el.setCustomValidity("Vui lòng điền vào trường này");
+    } else if (el.validity.typeMismatch && type === "email") {
+      el.setCustomValidity("Địa chỉ email không hợp lệ");
+    } else if (el.validity.tooShort) {
+      el.setCustomValidity(`Tối thiểu ${minLength} ký tự`);
+    } else {
+      el.setCustomValidity("Giá trị không hợp lệ");
+    }
+  };
+
   return (
     <div className="space-y-1.5">
       <Label htmlFor={id} className="text-sm font-semibold text-foreground/80">{label}</Label>
@@ -80,7 +93,11 @@ function InputField({
           autoComplete={autoComplete}
           value={value}
           placeholder={placeholder}
-          onChange={(e) => onChange(e.target.value)}
+          onInvalid={handleInvalid}
+          onChange={(e) => {
+            e.target.setCustomValidity("");
+            onChange(e.target.value);
+          }}
           className="pl-10 pr-10 h-11 rounded-2xl border-2 focus-visible:ring-0 focus-visible:border-primary transition-colors bg-secondary/40"
         />
         {isPassword && (
@@ -96,6 +113,30 @@ function InputField({
       </div>
     </div>
   );
+}
+
+function translateAuthError(msg: string): string {
+  const m = msg.toLowerCase();
+  if (m.includes("invalid login credentials") || m.includes("invalid credentials"))
+    return "Email hoặc mật khẩu không đúng";
+  if (m.includes("user already registered") || m.includes("already been registered"))
+    return "Email này đã được đăng ký";
+  if (m.includes("email not confirmed"))
+    return "Email chưa được xác nhận, vui lòng kiểm tra hộp thư";
+  if (
+    m.includes("invalid email") ||
+    m.includes("email address is invalid") ||
+    m.includes("unable to validate email")
+  )
+    return "Địa chỉ email không hợp lệ";
+  if (m.includes("password should be at least") || m.includes("password must be"))
+    return "Mật khẩu tối thiểu 6 ký tự";
+  if (m.includes("too many requests") || m.includes("rate limit"))
+    return "Quá nhiều yêu cầu, vui lòng thử lại sau";
+  if (m.includes("network") || m.includes("fetch")) return "Lỗi kết nối, vui lòng kiểm tra mạng";
+  if (m.includes("email link is invalid or has expired")) return "Liên kết xác nhận đã hết hạn";
+  if (m.includes("signup is disabled")) return "Đăng ký tài khoản tạm thời bị tắt";
+  return "Đã có lỗi xảy ra, vui lòng thử lại";
 }
 
 export const Route = createFileRoute("/auth")({
@@ -280,7 +321,7 @@ function SignUpForm() {
         });
         setBusy(false);
         if (error) {
-          toast.error(error.message);
+          toast.error(translateAuthError(error.message));
           return;
         }
         toast.success("Tạo tài khoản thành công! 🌱");

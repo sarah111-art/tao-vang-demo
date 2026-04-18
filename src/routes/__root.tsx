@@ -46,7 +46,7 @@ export const Route = createRootRoute({
       // Font preconnects
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      // Preload font CSS so it doesn't block render
+      // Preload font CSS then apply as stylesheet
       {
         rel: "preload",
         href: "https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap",
@@ -55,9 +55,6 @@ export const Route = createRootRoute({
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap",
-        media: "print",
-        // @ts-expect-error onload is valid HTML but not in TS types
-        onload: "this.media='all'",
       },
       // Preconnect for product images
       { rel: "preconnect", href: "https://images.unsplash.com" },

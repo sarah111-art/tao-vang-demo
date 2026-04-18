@@ -16,6 +16,22 @@ type SeedDetail = {
   video_url: string | null;
 };
 
+function toEmbedUrl(url: string): string | null {
+  try {
+    const u = new URL(url);
+    // Already embed
+    if (u.hostname.includes("youtube") && u.pathname.startsWith("/embed/")) return url;
+    // youtube.com/watch?v=ID
+    const v = u.searchParams.get("v");
+    if (u.hostname.includes("youtube") && v) return `https://www.youtube.com/embed/${v}`;
+    // youtu.be/ID
+    if (u.hostname === "youtu.be") return `https://www.youtube.com/embed${u.pathname}`;
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
 function SeedVideoPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
@@ -45,21 +61,24 @@ function SeedVideoPage() {
           <>
             <h1 className="text-2xl font-extrabold text-foreground mb-4">{seed.name}</h1>
 
-            {seed.video_url ? (
-              <div className="rounded-2xl overflow-hidden shadow-lg aspect-video bg-black">
-                <iframe
-                  src={seed.video_url}
-                  className="w-full h-full"
-                  allowFullScreen
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  title={seed.name}
-                />
-              </div>
-            ) : (
-              <div className="rounded-2xl bg-muted aspect-video flex items-center justify-center text-muted-foreground text-sm">
-                Video đang được cập nhật...
-              </div>
-            )}
+            {(() => {
+              const embedUrl = seed.video_url ? toEmbedUrl(seed.video_url) : null;
+              return embedUrl ? (
+                <div className="rounded-2xl overflow-hidden shadow-lg aspect-video bg-black">
+                  <iframe
+                    src={embedUrl}
+                    className="w-full h-full"
+                    allowFullScreen
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    title={seed.name}
+                  />
+                </div>
+              ) : (
+                <div className="rounded-2xl bg-muted aspect-video flex items-center justify-center text-muted-foreground text-sm">
+                  Video đang được cập nhật...
+                </div>
+              );
+            })()}
 
             {seed.description && (
               <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{seed.description}</p>

@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Leaf, X } from "lucide-react";
 import { toast } from "sonner";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
@@ -64,8 +65,10 @@ export function UnlockDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="p-0 overflow-hidden border-0 bg-transparent shadow-none max-w-[360px]">
+        <VisuallyHidden>
+          <DialogTitle>Mở khoá sản phẩm</DialogTitle>
+        </VisuallyHidden>
         <div className="bg-white rounded-2xl shadow-card">
-
           {/* Header */}
           <header className="flex items-center justify-between px-5 pt-5 pb-3">
             <div className="flex items-center gap-2 text-sm">
@@ -79,7 +82,6 @@ export function UnlockDialog({
               aria-label="Đóng"
               className="h-8 w-8 grid place-items-center rounded-full hover:bg-muted transition"
             >
-              <X className="h-5 w-5" />
             </button>
           </header>
 
